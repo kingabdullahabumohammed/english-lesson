@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Conversation - Listen and Practice</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #e0f2fe, #dcfce7, #fef08a, #fbcfe8);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .english-font {
+            font-family: 'Nunito', sans-serif;
+            direction: ltr;
+        }
+
+        .floating-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+            animation: floatAround 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatAround {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-30px) rotate(15deg) scale(1.1); }
+            100% { transform: translateY(15px) rotate(-10deg) scale(0.9); }
+        }
+
+        #video-container {
+            width: 95%;
+            max-width: 1000px;
+            height: 72vh;
+            min-height: 520px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2), inset 0 0 0 4px rgba(255,255,255,0.9);
+            border: 2px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        #slides-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.4s ease;
+        }
+
+        .slide-content.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        .slide-content.active .anim-header {
+            animation: slideDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .slide-content.active .anim-image {
+            animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
+            opacity: 0; transform: scale(0.3);
+        }
+        .slide-content.active .anim-text-group {
+            animation: slideInRight 0.6s ease-out 0.6s forwards;
+            opacity: 0; transform: translateX(50px);
+        }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideInRight {
+            0% { opacity: 0; transform: translateX(50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .text-box {
+            background: #ffffff;
+            border: 3px solid #e2e8f0;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .speaking-highlight {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            transform: scale(1.03) translateX(-10px);
+            box-shadow: 0 20px 30px -10px rgba(34, 197, 94, 0.35);
+            border-right: 10px solid #16a34a !important;
+        }
+
+        .speaking-highlight .english-font {
+            color: #166534 !important;
+        }
+
+        .controls-bar {
+            background: #f8fafc;
+            border-top: 2px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .progress-wrapper {
+            flex: 1;
+            height: 14px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .btn {
+            background: white;
+            border: 2px solid #cbd5e1;
+            color: #475569;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #f1f5f9;
+            color: #2563eb;
+            transform: translateY(-2px);
+            border-color: #93c5fd;
+        }
+
+        .btn.play-btn {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            font-size: 2rem;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn.play-btn:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 15px 25px rgba(37, 99, 235, 0.5);
+        }
+
+        .header-badge {
+            background: #2563eb;
+            color: white;
+            padding: 0.6rem 3rem;
+            border-radius: 2rem;
+            font-size: 2rem;
+            font-weight: 900;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+        }
+
+        .svg-container {
+            width: 260px;
+            height: 260px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            filter: drop-shadow(0 20px 15px rgba(0, 0, 0, 0.12));
+        }
+
+        .svg-container svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #start-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="floating-element text-6xl" style="top: 10%; right: 10%; animation-delay: 0s;">👋</div>
+    <div class="floating-element text-5xl" style="top: 20%; left: 15%; animation-delay: 1.5s;">💬</div>
+    <div class="floating-element text-7xl" style="bottom: 15%; right: 20%; animation-delay: 3s;">🌟</div>
+    <div class="floating-element text-6xl" style="bottom: 10%; left: 10%; animation-delay: 0.5s;">🤝</div>
+
+    <div id="video-container">
+        
+        <div id="start-overlay">
+            <div class="w-28 h-28 bg-blue-100 rounded-full flex items-center justify-center text-6xl mb-6 shadow-inner border-4 border-blue-200 animate-bounce">
+                👋
+            </div>
+            <h1 class="text-4xl font-black text-slate-800 mb-2 english-font">Listen and Practice</h1>
+            <p class="text-xl text-slate-600 font-bold mb-8">فيديو تعليمي تفاعلي للمحادثة والتعارف باللغة الإنجليزية</p>
+            <button onclick="startLesson()" class="english-font bg-blue-600 hover:bg-blue-700 text-white text-3xl font-black px-12 py-5 rounded-full shadow-[0_8px_0_0_#1e40af] hover:translate-y-[2px] hover:shadow-[0_6px_0_0_#1e40af] active:translate-y-[8px] active:shadow-[0_0px_0_0_#1e40af] transition-all flex items-center gap-4">
+                START VIDEO <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
+
+        <div id="slides-container">
+            <!-- Slides rendered dynamically -->
+        </div>
+
+        <div class="controls-bar">
+            <button class="btn" id="prev-btn" onclick="prevSlide()" title="السابق">
+                <i class="fa-solid fa-backward-step"></i>
+            </button>
+            
+            <button class="btn play-btn" id="play-pause-btn" onclick="togglePlay()" title="تشغيل / إيقاف">
+                <i class="fa-solid fa-pause" id="play-icon"></i>
+            </button>
+            
+            <button class="btn" id="next-btn" onclick="nextSlide()" title="التالي">
+                <i class="fa-solid fa-forward-step"></i>
+            </button>
+
+            <div class="w-px h-8 bg-slate-300 mx-2"></div>
+
+            <div class="progress-wrapper">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+
+            <div class="w-px h-8 bg-slate-300 mx-2"></div>
+
+            <button class="btn" id="replay-btn" onclick="replayAudio()" title="إعادة الصوت">
+                <i class="fa-solid fa-volume-high text-blue-600"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const lessonData = [
+            {
+                title: "Greetings & Names / التحية والأسماء",
+                svg: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="#eff6ff" stroke="#3b82f6" stroke-width="4"/>
+                        <!-- Two people shaking hands -->
+                        <circle cx="35" cy="40" r="12" fill="#fcd34d"/>
+                        <circle cx="65" cy="40" r="12" fill="#fcd34d"/>
+                        <path d="M 25 75 Q 35 55 50 65 Q 65 55 75 75" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+                    </svg>`,
+                content: [
+                    {
+                        enVoice: "Hi. I'm Jack. What's your name?",
+                        displayEn: "Hi. I'm Jack. <span class='text-blue-600 font-black'>What's your name?</span>",
+                        ar: "أهلاً. أنا جاك. ما اسمك؟",
+                        id: "item-0-0"
+                    },
+                    {
+                        enVoice: "My name's Hashim.",
+                        displayEn: "My name's <span class='text-blue-600 font-black'>Hashim</span>.",
+                        ar: "اسمي هاشم.",
+                        id: "item-0-1"
+                    }
+                ]
+            },
+            {
+                title: "Age / العمر",
+                svg: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="#dcfce7" stroke="#22c55e" stroke-width="4"/>
+                        <text x="50" y="65" font-size="40" font-weight="900" text-anchor="middle" fill="#16a34a">11</text>
+                    </svg>`,
+                content: [
+                    {
+                        enVoice: "How old are you?",
+                        displayEn: "<span class='text-green-600 font-black'>How old are you?</span>",
+                        ar: "كم عمرك؟",
+                        id: "item-1-0"
+                    },
+                    {
+                        enVoice: "I'm eleven years old.",
+                        displayEn: "I'm <span class='text-green-600 font-black'>eleven years old</span>.",
+                        ar: "عمري أحدعشر عاماً.",
+                        id: "item-1-1"
+                    }
+                ]
+            },
+            {
+                title: "Where you live / مكان السكن",
+                svg: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="#fef08a" stroke="#eab308" stroke-width="4"/>
+                        <!-- House icon -->
+                        <polygon points="50,25 25,50 35,50 35,75 65,75 65,50 75,50" fill="#ca8a04"/>
+                    </svg>`,
+                content: [
+                    {
+                        enVoice: "Where do you live?",
+                        displayEn: "<span class='text-amber-600 font-black'>Where do you live?</span>",
+                        ar: "أين تعيش؟",
+                        id: "item-2-0"
+                    },
+                    {
+                        enVoice: "I live in Jeddah.",
+                        displayEn: "I live in <span class='text-amber-600 font-black'>Jeddah</span>.",
+                        ar: "أنا أعيش في جدة.",
+                        id: "item-2-1"
+                    }
+                ]
+            },
+            {
+                title: "Polite Greetings / التحيات الودية",
+                svg: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="#fbcfe8" stroke="#ec4899" stroke-width="4"/>
+                        <path d="M 35 45 Q 50 30 65 45 Q 50 70 35 45 Z" fill="#db2777"/>
+                    </svg>`,
+                content: [
+                    {
+                        enVoice: "Nice to meet you.",
+                        displayEn: "<span class='text-pink-600 font-black'>Nice to meet you.</span>",
+                        ar: "سررت بلقائك.",
+                        id: "item-3-0"
+                    },
+                    {
+                        enVoice: "Nice to meet you, too.",
+                        displayEn: "<span class='text-pink-600 font-black'>Nice to meet you, too.</span>",
+                        ar: "أنا سررت بلقائك أيضاً.",
+                        id: "item-3-1"
+                    }
+                ]
+            }
+        ];
+
+        let currentSlideIndex = 0;
+        let isPlaying = false;
+        let stopRequested = false;
+        let currentUtterance = null;
+        const synth = window.speechSynthesis;
+
+        let voices = [];
+        function loadVoices() {
+            voices = synth.getVoices();
+        }
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        const slidesContainer = document.getElementById('slides-container');
+        
+        function buildSlides() {
+            lessonData.forEach((slide, sIndex) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = `slide-content ${sIndex === 0 ? 'active' : ''}`;
+                slideDiv.id = `slide-${sIndex}`;
+                
+                let contentHTML = '';
+                slide.content.forEach(item => {
+                    contentHTML += `
+                        <div id="${item.id}" class="text-box">
+                            <div class="english-font text-xl md:text-2xl font-bold text-slate-800 leading-relaxed">${item.displayEn}</div>
+                            ${item.ar ? `<div class="text-lg font-bold text-slate-500 mt-2 border-t border-slate-100 pt-2">${item.ar}</div>` : ''}
+                        </div>
+                    `;
+                });
+
+                slideDiv.innerHTML = `
+                    <div class="anim-header header-badge mb-4 english-font text-center">
+                        ${slide.title}
+                    </div>
+                    <div class="flex-1 w-full flex flex-col md:flex-row items-center justify-center gap-8 max-w-5xl">
+                        <div class="anim-image svg-container bg-white/60 rounded-[3rem] p-6 border-4 border-white shadow-xl">
+                            ${slide.svg}
+                        </div>
+                        <div class="anim-text-group flex-1 flex flex-col gap-3 w-full">
+                            ${contentHTML}
+                        </div>
+                    </div>
+                `;
+                slidesContainer.appendChild(slideDiv);
+            });
+            updateProgressBar();
+        }
+
+        buildSlides();
+
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        function getBestVoice() {
+            if (voices.length === 0) loadVoices();
+            return voices.find(v => v.name.includes('Google US English')) || 
+                   voices.find(v => v.name.includes('Microsoft Aria')) ||
+                   voices.find(v => v.name.includes('Samantha')) ||
+                   voices.find(v => v.lang.startsWith('en-US')) || 
+                   voices.find(v => v.lang.startsWith('en-GB')) || 
+                   voices[0];
+        }
+
+        function speakText(text, highlightId) {
+            return new Promise((resolve) => {
+                if (!text || stopRequested) { resolve(); return; }
+                
+                synth.cancel();
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.rate = 0.85;
+                currentUtterance.pitch = 1.1;
+                
+                const voice = getBestVoice();
+                if (voice) currentUtterance.voice = voice;
+
+                currentUtterance.onstart = () => {
+                    const el = document.getElementById(highlightId);
+                    if (el) el.classList.add('speaking-highlight');
+                };
+
+                currentUtterance.onend = () => {
+                    const el = document.getElementById(highlightId);
+                    if (el) el.classList.remove('speaking-highlight');
+                    resolve();
+                };
+                
+                currentUtterance.onerror = () => {
+                    const el = document.getElementById(highlightId);
+                    if (el) el.classList.remove('speaking-highlight');
+                    resolve();
+                };
+
+                synth.speak(currentUtterance);
+            });
+        }
+
+        async function playSequence() {
+            if (stopRequested) return;
+
+            while (currentSlideIndex < lessonData.length && !stopRequested) {
+                renderSlide(currentSlideIndex);
+                await sleep(1000); 
+
+                const slide = lessonData[currentSlideIndex];
+                for (const item of slide.content) {
+                    if (stopRequested) break;
+                    await speakText(item.enVoice, item.id);
+                    if (stopRequested) break;
+                    await sleep(500);
+                }
+                
+                if (stopRequested) break;
+                await sleep(2500);
+                
+                if (!stopRequested) {
+                    if (currentSlideIndex < lessonData.length - 1) {
+                        currentSlideIndex++;
+                    } else {
+                        togglePlay(); 
+                        break;
+                    }
+                }
+            }
+        }
+
+        function renderSlide(index) {
+            document.querySelectorAll('.slide-content').forEach(el => {
+                el.classList.remove('active');
+                el.querySelectorAll('.text-box').forEach(box => box.classList.remove('speaking-highlight'));
+            });
+            
+            const target = document.getElementById(`slide-${index}`);
+            if (target) target.classList.add('active');
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const pct = ((currentSlideIndex + 1) / lessonData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        function updatePlayIcon() {
+            const icon = document.getElementById('play-icon');
+            if (isPlaying) {
+                icon.classList.remove('fa-play', 'ml-1');
+                icon.classList.add('fa-pause');
+            } else {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play', 'ml-1');
+            }
+        }
+
+        function startLesson() {
+            document.getElementById('start-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('start-overlay').style.display = 'none';
+                togglePlay();
+            }, 500);
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            updatePlayIcon();
+
+            if (isPlaying) {
+                stopRequested = false;
+                playSequence();
+            } else {
+                stopRequested = true;
+                synth.cancel();
+                document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight'));
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < lessonData.length - 1) {
+                currentSlideIndex++;
+                handleManualNav();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                handleManualNav();
+            }
+        }
+
+        function handleManualNav() {
+            if (isPlaying) {
+                stopRequested = true;
+                synth.cancel();
+                setTimeout(() => {
+                    stopRequested = false;
+                    playSequence();
+                }, 100);
+            } else {
+                renderSlide(currentSlideIndex);
+            }
+        }
+
+        async function replayAudio() {
+            if (isPlaying) {
+                stopRequested = true;
+                synth.cancel();
+                setTimeout(() => {
+                    stopRequested = false;
+                    playSequence();
+                }, 100);
+            } else {
+                synth.cancel();
+                const slide = lessonData[currentSlideIndex];
+                for (const item of slide.content) {
+                    await speakText(item.enWord || item.enVoice, item.id);
+                    await sleep(400);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
